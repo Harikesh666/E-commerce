@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { id: 3, name: "Product 3", price: 59.99 },
     ];
 
-    const cart = [];
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
 
     const productList = document.getElementById("product-list");
     const cartItems = document.getElementById("cart-items");
@@ -43,7 +43,8 @@ document.addEventListener("DOMContentLoaded", () => {
         cartItems.innerHTML = "";
         let totalPrice = 0;
 
-        console.log("Cart length: ", cart.length); 
+        console.log("Cart length: ", cart.length);
+        console.log("Empty cart message visibility: ", emptyCartMessage.classList); 
 
         if (cart.length > 0) {
             emptyCartMessage.classList.add("hidden");
@@ -57,8 +58,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 <button data-index="${index}">Delete</button>
                 `;
                 cartItems.appendChild(cartItem);
+                totalPriceDisplay.textContent = `${totalPrice.toFixed(2)}`;
             });
-            totalPriceDisplay.textContent = `${totalPrice.toFixed(2)}`;
+            saveCart();
         } else {
             emptyCartMessage.classList.remove("hidden");
             cartTotalMessage.classList.add("hidden");
@@ -70,16 +72,23 @@ document.addEventListener("DOMContentLoaded", () => {
         if (e.target.tagName === "BUTTON") {
             const index = parseInt(e.target.getAttribute("data-index"));
             cart.splice(index, 1);
+            emptyCartMessage.classList.remove("hidden");
             renderCart();
+            saveCart();
         }
     });
 
     checkOutBtn.addEventListener("click", () => {
         cart.length = 0;
+        saveCart();
         totalPriceDisplay.textContent = `0.00`;
         alert("Checked out successfully");
         renderCart();
     });
+
+    function saveCart() {
+        localStorage.setItem("cart", JSON.stringify(cart));
+    }
 
     renderCart();
 });
