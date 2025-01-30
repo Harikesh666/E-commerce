@@ -43,6 +43,8 @@ document.addEventListener("DOMContentLoaded", () => {
         cartItems.innerHTML = "";
         let totalPrice = 0;
 
+        console.log("Cart length: ", cart.length); 
+
         if (cart.length > 0) {
             emptyCartMessage.classList.add("hidden");
             cartTotalMessage.classList.remove("hidden");
@@ -52,19 +54,32 @@ document.addEventListener("DOMContentLoaded", () => {
                 const cartItem = document.createElement("div");
                 cartItem.innerHTML = `
                 ${item.name} - $${item.price.toFixed(2)}
+                <button data-index="${index}">Delete</button>
                 `;
                 cartItems.appendChild(cartItem);
-                totalPriceDisplay.textContent = `${totalPrice.toFixed(2)}`;
             });
+            totalPriceDisplay.textContent = `${totalPrice.toFixed(2)}`;
         } else {
             emptyCartMessage.classList.remove("hidden");
+            cartTotalMessage.classList.add("hidden");
+            totalPriceDisplay.textContent = `0.00`;
         }
     }
+
+    cartItems.addEventListener("click", (e) => {
+        if (e.target.tagName === "BUTTON") {
+            const index = parseInt(e.target.getAttribute("data-index"));
+            cart.splice(index, 1);
+            renderCart();
+        }
+    });
 
     checkOutBtn.addEventListener("click", () => {
         cart.length = 0;
         totalPriceDisplay.textContent = `0.00`;
-        alert("Checked out successfuly");
+        alert("Checked out successfully");
         renderCart();
     });
+
+    renderCart();
 });
